@@ -1,0 +1,98 @@
+﻿@page "/veiculo"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IVeiculoService veiculoService
+
+<h3>Veiculos Cadastrados</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Modelo</th>
+            <th>Fabricante</th>
+            <th>Ano</th>                        
+            <th>Placa</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (veiculos != null)
+        {
+            @foreach (var veiculo in veiculos)
+            {
+                <tr>
+                    <td class="text-uppercase">@veiculo.Modelo</td>
+                    <td class="text-uppercase">@veiculo.Fabricante</td>                    
+                    <td>@veiculo.AnoFabricacao</td>
+                    <td class="text-uppercase">@veiculo.Placa</td>
+                    <td><a class="btn btn-primary" href="/editveiculo/@veiculo.VeiculoId">Editar</a> </td>
+                <td><a class="btn btn-danger" @onclick="@(() => DeletaConfirma(veiculo.VeiculoId))" style="color:white">Deletar</a> </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Carregando...</p>
+        }
+    </tbody>
+</table>
+
+<hr />
+<Confirma @ref="confirma" onCancela="@CancelaConfirma" onConfirma="@DeletaVeiculo">
+    <div>Deseja realmente excluir este item?</div>
+</Confirma>
+
+<ExibeErro @ref="erro" ErrorMessage=@erroMsg></ExibeErro>
+
+@code {
+    ExibeErro erro;
+    private string erroMsg = "";
+    Confirma confirma;    
+    private int idVeiculo;
+    private List<VeiculoDTO> veiculos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregaVeiculos();
+    }
+
+    async Task CarregaVeiculos()
+    {
+        try
+        {
+            veiculos = await veiculoService.GetVeiculos();            
+        }
+        catch (Exception ex)
+        {
+            // Log ou exiba a mensagem de erro
+            erroMsg = $"Erro ao carregar veículos: {ex.Message}";
+        }
+    }
+
+    void DeletaConfirma(int id)
+    {
+        confirma.Exibir();
+        idVeiculo = id;
+    }
+
+    async Task DeletaVeiculo()
+    {
+        try
+        {
+            await veiculoService.DeleteVeiculo(idVeiculo);
+            confirma.Ocultar();
+            await CarregaVeiculos();
+        }
+        catch (Exception ex)
+        {
+            erroMsg = $"Erro ao deletar veiculo: {ex.Message}";
+        }
+        
+    }
+
+    void CancelaConfirma()
+    {
+        confirma.Ocultar();
+    }
+
+
+}

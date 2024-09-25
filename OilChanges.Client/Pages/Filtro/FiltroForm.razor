@@ -1,0 +1,76 @@
+﻿@using OilChanges.Shared.DTOs
+﻿<EditForm Model="@filtro" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label form="nome">Nome Filtro: </label>
+                <div>
+                    <InputText @bind-Value="filtro.Marca" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> filtro.Marca)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label form="fabricante">Fabricante: </label>
+                <div>
+                    <InputText @bind-Value="filtro.Modelo" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> filtro.Modelo)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label form="tipo">Tipo: </label>
+                <div>
+                    <InputText @bind-Value="filtro.Tipo" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> filtro.Tipo)" />
+                </div>
+            </div>            
+            <div class="form-group">
+                <label form="dataDeFabricacao">DataDeFabricacao: </label>
+                <div>
+                    <InputDate @bind-Value="filtro.DataDeFabricacao" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> filtro.DataDeFabricacao)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label form="dataDeValidade">DataDeValidade: </label>
+                <div>
+                    <InputDate @bind-Value="filtro.DataDeValidade" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> filtro.DataDeValidade)" />
+                </div>
+            </div>                     
+        </div>
+        <br />
+        <div class="row mt-6">
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-success">
+                    @btnTextSubmit
+                </button>
+                <button type="submit" class="btn btn-danger"
+                        @onclick="@Cancela">
+                    @btnTextCancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Inject]
+    public NavigationManager navigation { get; set; }
+
+    [Parameter]
+    public FiltroDTO filtro { get; set; }
+
+    [Parameter]
+    public string btnTextSubmit { get; set; } = "Salvar";
+
+    [Parameter]
+    public string btnTextCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public EventCallback Cancela { get; set; }
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+}

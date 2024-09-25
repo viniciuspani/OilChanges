@@ -1,0 +1,65 @@
+﻿@page "/editveiculo/{veiculoId:int}"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IVeiculoService veiculoService
+@inject NavigationManager navigation
+
+
+<h2>Editar  Veiculo</h2>
+
+<Alerta Exibir="Exibir">
+    <h3>@Mensagem</h3>
+</Alerta>
+
+<VeiculoForm veiculo="veiculo" OnValidSubmit="EditVeiculo"
+             btnTextSubmit="Salvar" btnTextCancelar="Cancela" Cancela="Cancel" >
+
+</VeiculoForm>
+
+@code {
+    VeiculoDTO? veiculo = new VeiculoDTO();
+
+    bool Exibir = false;
+
+    [Parameter]
+    public string Mensagem { get; set; }
+
+    [Parameter]
+    public int veiculoId { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            veiculo = await veiculoService.GetVeiculo(veiculoId);
+        }
+        catch (Exception ex)
+        {
+            Exibir = true;
+            Mensagem = "Erro ao carregar dados do veiculo - " + ex.StackTrace;
+        }
+    }
+
+    protected async Task EditVeiculo()
+    {
+        try
+        {
+            await veiculoService.UpdateVeiculo(veiculoId, veiculo);
+            navigation.NavigateTo("veiculo");
+            
+        }
+        catch (Exception ex)
+        {
+            Exibir = true;
+            Mensagem = "Erro ao atualizar os dados ...\n" + ex.StackTrace.ToString();
+            throw;
+        }
+    }
+
+    void Cancel()
+    {
+        navigation.NavigateTo("veiculo");
+    }
+}

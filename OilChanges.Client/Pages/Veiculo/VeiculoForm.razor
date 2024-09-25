@@ -1,0 +1,62 @@
+﻿@using OilChanges.Shared.DTOs
+﻿<EditForm Model="@veiculo" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label form="nome">Nome Veiculo: </label>
+                <div>
+                    <InputText @bind-Value="veiculo.Modelo" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> veiculo.Modelo)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label form="fabricante">Fabricante: </label>
+                <div>
+                    <InputText @bind-Value="veiculo.Fabricante" class="form-control text-uppercase" />
+                    <ValidationMessage For="@(()=> veiculo.Fabricante)" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label form="anoFabricacao">Ano Fabricacao: </label>
+                <div>
+                    <InputNumber @bind-Value="veiculo.AnoFabricacao" class="form-control" />
+                    <ValidationMessage For="@(()=> veiculo.AnoFabricacao)" />
+                </div>
+            </div>          
+        </div>
+        <br />
+        <div class="row mt-6">
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-success">
+                    @btnTextSubmit
+                </button>
+                <button type="submit" class="btn btn-danger"
+                        @onclick="@Cancela">
+                    @btnTextCancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Inject]
+    public NavigationManager navigation { get; set; }
+
+    [Parameter]
+    public VeiculoDTO veiculo { get; set; }
+
+    [Parameter]
+    public string btnTextSubmit { get; set; } = "Salvar";
+
+    [Parameter]
+    public string btnTextCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public EventCallback Cancela { get; set; }
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+}

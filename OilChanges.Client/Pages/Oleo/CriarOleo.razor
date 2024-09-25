@@ -1,0 +1,27 @@
+﻿@page "/oleo/create"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IOleoService oleoService
+@inject NavigationManager navigation
+
+<h2>Cadastrar novo Oleo</h2>
+
+<OleoForm oleo="oleo" OnValidSubmit="CadastrarOleo"
+             btnTextSubmit="Salvar" btnTextCancelar="Cancelar" Cancela="Cancel">
+
+</OleoForm>
+
+@code {
+    private OleoDTO oleo = new OleoDTO();
+
+    async  Task CadastrarOleo()
+    {
+        await oleoService.CreateOleo(oleo);
+        navigation.NavigateTo("oleo");
+    }
+
+    void Cancel()
+    {        
+        navigation.NavigateTo("oleo");
+    }
+}

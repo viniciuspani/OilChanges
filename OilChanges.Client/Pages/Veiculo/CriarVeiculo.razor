@@ -1,0 +1,27 @@
+﻿@page "/veiculo/create"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IVeiculoService veiculoService
+@inject NavigationManager navigation
+
+<h2>Cadastrar novo Veiculo</h2>
+
+<VeiculoForm veiculo="veiculo" OnValidSubmit="CadastrarVeiculo"
+             btnTextSubmit="Salvar" btnTextCancelar="Cancelar" Cancela="Cancel">
+
+</VeiculoForm>
+
+@code {
+    private VeiculoDTO veiculo = new VeiculoDTO();
+
+    async  Task CadastrarVeiculo()
+    {
+        await veiculoService.CreateVeiculo(veiculo);
+        navigation.NavigateTo("veiculos");
+    }
+
+    void Cancel()
+    {        
+        navigation.NavigateTo("veiculos");
+    }
+}

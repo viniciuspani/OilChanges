@@ -1,0 +1,27 @@
+﻿@page "/filtro/create"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IFiltroService filtroService
+@inject NavigationManager navigation
+
+<h2>Cadastrar novo Filtro</h2>
+
+<FiltroForm filtro="filtro" OnValidSubmit="CadastrarFiltro"
+             btnTextSubmit="Salvar" btnTextCancelar="Cancelar" Cancela="Cancel">
+
+</FiltroForm>
+
+@code {
+    private FiltroDTO filtro = new FiltroDTO();
+
+    async  Task CadastrarFiltro()
+    {
+        await filtroService.CreateFiltro(filtro);
+        navigation.NavigateTo("filtro");
+    }
+
+    void Cancel()
+    {        
+        navigation.NavigateTo("filtro");
+    }
+}

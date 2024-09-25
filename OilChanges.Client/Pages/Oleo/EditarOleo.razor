@@ -1,0 +1,65 @@
+﻿@page "/editoleo/{oleoId:int}"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IOleoService oleoService
+@inject NavigationManager navigation
+
+
+<h2>Editar  Oleo</h2>
+
+<Alerta Exibir="Exibir">
+    <h3>@Mensagem</h3>
+</Alerta>
+
+<OleoForm oleo="oleo" OnValidSubmit="EditOleo"
+             btnTextSubmit="Salvar" btnTextCancelar="Cancela" Cancela="Cancel" >
+
+</OleoForm>
+
+@code {
+    OleoDTO? oleo = new OleoDTO();
+
+    bool Exibir = false;
+
+    [Parameter]
+    public string Mensagem { get; set; }
+
+    [Parameter]
+    public int oleoId { get; set; }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            oleo = await oleoService.GetOleo(oleoId);
+        }
+        catch (Exception ex)
+        {
+            Exibir = true;
+            Mensagem = "Erro ao carregar dados do oleo - " + ex.StackTrace;
+        }
+    }
+
+    protected async Task EditOleo()
+    {
+        try
+        {
+            await oleoService.UpdateOleo(oleoId, oleo);
+            navigation.NavigateTo("oleo");
+            
+        }
+        catch (Exception ex)
+        {
+            Exibir = true;
+            Mensagem = "Erro ao atualizar os dados ...\n" + ex.StackTrace.ToString();
+            throw;
+        }
+    }
+
+    void Cancel()
+    {
+        navigation.NavigateTo("oleo");
+    }
+}

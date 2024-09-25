@@ -1,0 +1,55 @@
+﻿@page "/editfiltro/{filtroId:int}"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IFiltroService filtroService
+@inject NavigationManager navigation
+
+<h2>Editar Filtro</h2>
+
+<FiltroForm filtro="filtro" OnValidSubmit="EditFiltro"
+             btnTextSubmit="Salvar" btnTextCancelar="Cancela" Cancela="Cancel" >
+
+</FiltroForm>
+
+<ExibeErro @ref="erro" ErrorMessage=@erroMsg></ExibeErro>
+
+@code {
+    FiltroDTO? filtro = new FiltroDTO();
+    ExibeErro erro;
+    private string erroMsg = "";
+
+    [Parameter]
+    public int filtroId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            filtro = await filtroService.GetFiltro(filtroId);
+        }
+        catch (Exception ex)
+        {
+            
+            erroMsg = "Erro ao carregar dados do oleo - " + ex.StackTrace;
+        }
+    }
+
+    protected async Task EditFiltro()
+    {
+        try
+        {
+            await filtroService.UpdateFiltro(filtroId, filtro);
+            navigation.NavigateTo("filtro");
+            
+        }
+        catch (Exception ex)
+        {            
+            erroMsg = "Erro ao atualizar os dados ...\n" + ex.StackTrace.ToString();         
+        }
+    }
+
+    void Cancel()
+    {
+        navigation.NavigateTo("filtro");
+    }
+}

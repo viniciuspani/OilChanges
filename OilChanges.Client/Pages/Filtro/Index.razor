@@ -1,0 +1,98 @@
+﻿@page "/filtro"
+@using OilChanges.Client.Services
+@using OilChanges.Shared.DTOs
+@inject IFiltroService filtroService
+
+<h3>Oleos Cadastrados</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Tipo</th>                        
+            <th>DataDeFabricacao</th>
+            <th>DataDeValidade</th>            
+        </tr>
+    </thead>
+    <tbody>
+        @if (filtros != null)
+        {
+            @foreach (var filtro in filtros)
+            {
+                <tr>
+                    <td class="text-uppercase">@filtro.Marca</td>
+                    <td class="text-uppercase">@filtro.Modelo</td>
+                    <td class="text-uppercase">@filtro.Tipo</td>                    
+                    <td class="text-uppercase">@filtro.DataDeFabricacao</td>
+                    <td class="text-uppercase">@filtro.DataDeValidade</td>                    
+                    <td><a class="btn btn-primary" href="/editfiltro/@filtro.FiltroId">Editar</a> </td>
+                    <td><a class="btn btn-danger" @onclick="@(() => DeletaConfirma(filtro.FiltroId))" style="color:white">Deletar</a> </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>Carregando...</p>
+        }
+    </tbody>
+</table>
+
+<hr />
+<Confirma @ref="confirma" onCancela="@CancelaConfirma" onConfirma="@DeletaFiltro">
+    <div>Deseja realmente excluir este item?</div>
+</Confirma>
+
+<ExibeErro @ref="erro" ErrorMessage=@erroMsg></ExibeErro>
+
+@code {    
+    Confirma confirma;
+    ExibeErro erro;
+    private string erroMsg = "";
+    private int idFiltro;
+    private List<FiltroDTO> filtros;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregaFiltros();
+    }
+
+    async Task CarregaFiltros()
+    {
+        try
+        {
+            filtros = await filtroService.GetFiltros();
+        }
+        catch (Exception ex)
+        {
+            erroMsg = $"Erro ao carregar os filtros: {ex.Message}";            
+        }
+    }
+
+    void DeletaConfirma(int id)
+    {
+        confirma.Exibir();
+        idFiltro = id;
+    }
+
+    async Task DeletaFiltro()
+    {
+        try
+        {
+            await filtroService.DeleteFiltro(idFiltro);
+            confirma.Ocultar();
+            await CarregaFiltros();
+        }
+        catch (Exception ex)
+        {
+            erroMsg = $"Erro ao carregar os oleos: {ex.Message}";
+        }
+        
+    }
+
+    void CancelaConfirma()
+    {
+        confirma.Ocultar();
+    }
+
+}
